@@ -1,15 +1,19 @@
-#include <iostream>
-#include <vector>
-#include "Server.h"
+#include "Controller.h"
+#include "Configuration.h"
 
 using namespace std;
 using namespace ircbot;
 
 int main(int argc, char* argv[]) {
 
-	vector<Server> servers;
+	std::string configFilePath("./config.cfg");
 
-	while (servers.size() > 0)
+	Controller& controller = Controller::getInstance();
+	Configuration& configuration = Configuration::getInstance();
+
+	configuration.loadConfigurationFile(&configFilePath);
+
+	while (controller.getServerCount() > 0)
 		sleep(1000);
 
 
