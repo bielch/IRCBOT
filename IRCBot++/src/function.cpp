@@ -6,8 +6,6 @@
  */
 
 #include "function.h"
-#include <libircclient.h>
-#include <vector>
 
 namespace ircbot {
 
