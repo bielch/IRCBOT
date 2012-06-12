@@ -8,6 +8,8 @@
 #ifndef FUNCTION_H_
 #define FUNCTION_H_
 
+#include <stdio.h>
+
 namespace ircbot {
 
 int fileExists(const char* filepath);
