@@ -10,6 +10,11 @@
 
 namespace ircbot {
 
+int fileExists(const char* filepath);
+
+int fileCreate(const char* filepath);
+
+void fileLog(FILE* logfile, const char* msg);
 
 } /* namespace ircbot */
 #endif /* FUNCTION_H_ */
