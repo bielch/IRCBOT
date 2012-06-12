@@ -6,6 +6,7 @@
  */
 
 #include "function.h"
+#include <vector>
 
 namespace ircbot {
 
@@ -41,4 +42,11 @@ void fileLog(FILE* logfile, const char* msg) {
 		fflush(logfile);
 	}
 }
+
+void removeWhitespaces(std::string& pString){
+	for(unsigned int i = 0; i < pString.size(); i++)
+		if(pString[i] == ' ')
+			pString.erase(i, 1);
+}
+
 }

@@ -12,6 +12,7 @@ int main(int argc, char* argv[]) {
 	Configuration& configuration = Configuration::getInstance();
 
 	configuration.loadConfigurationFile(&configFilePath);
+	configuration.loadParameter(argc, argv);
 
 	while (controller.getServerCount() > 0)
 		sleep(1000);
