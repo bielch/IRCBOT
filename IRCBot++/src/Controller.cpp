@@ -72,6 +72,8 @@ void Controller::executeCommand(std::string* pCommand, ircbot_context* context) 
 	std::string command;
 	std::string payload;
 
+	removeFrontWhitespaces(*pCommand);
+
 	equal = pCommand->find('=');
 	if (equal == std::string::npos)
 		equal = pCommand->find(' ');
@@ -80,15 +82,22 @@ void Controller::executeCommand(std::string* pCommand, ircbot_context* context) 
 		command = pCommand->substr(0, int(equal));
 		payload = pCommand->substr(int(equal), pCommand->size() - int(equal));
 
-		DEBUG("command: " << command << " payload: " << payload);
-
 		removeWhitespaces(command);
 
-		if (pCommand->compare(0, 6, "server") || pCommand->compare(0, 10, "joinserver")) {
-			equal = payload.find(':');
-			if (equal != std::string::npos) {
-				joinServer(&payload, (unsigned short) atoi(payload.substr(int(equal), payload.size() - int(equal)).c_str()), &Configuration::getInstance().mNickname);
-			}
+		DEBUG("command: " << command << " payload: " << payload);
+
+		if (command.compare("log") == 0) {
+			removeWhitespaces(payload);
+
+			if (payload.compare("0") == 0)
+				Configuration::getInstance().mLog = false;
+
+			if (payload.compare("1") == 0)
+				Configuration::getInstance().mLog = true;
+		}
+
+		if(command.compare("nickname") == 0){
+			context->pConnection->
 		}
 
 	}

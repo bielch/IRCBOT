@@ -53,6 +53,14 @@ void removeWhitespaces(std::string& pString) {
 			pString.erase(i, 1);
 }
 
+void removeFrontWhitespaces(std::string& pString) {
+	for (unsigned int i = 0; i < pString.size(); i++)
+		if (pString[i] == ' ')
+			pString.erase(i, 1);
+		else
+			return;
+}
+
 void event_join(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {
 
 	if (!origin)
@@ -80,6 +88,7 @@ void event_channel_notice(irc_session_t * session, const char * event, const cha
 	struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
 	std::string message = params[1];
 	std::string user = origin;
+	std::string command;
 
 	printf("%s\n", message.c_str());
 
@@ -90,7 +99,14 @@ void event_channel_notice(irc_session_t * session, const char * event, const cha
 
 	ctx->pLog->mDatabase->updateUser(&user);
 
-	ctx->pController->executeCommand(message, ircbot_context);
+	DEBUG("Message:" << message);
+	DEBUG("User:" << user);
+
+	if (message.compare(0, ctx->pConnection->mNickname.size(), ctx->pConnection->mNickname) == 0) {
+		command = message.substr(ctx->pConnection->mNickname.size(), message.size() - ctx->pConnection->mNickname.size());
+		DEBUG("Command:" << command);
+		ctx->pController->executeCommand(&command, ctx);
+	}
 
 }
 

@@ -42,6 +42,10 @@ Connection::Connection(std::string* pHostname, unsigned short usPort, std::strin
 	// And create the IRC session; 0 means error
 	mSession = irc_create_session(&mCallbacks);
 
+	if(!mSession){
+		DEBUG("Session konnte nicht erzeugt werden.");
+	}
+
 	irc_set_ctx(mSession, &mContext);
 	irc_option_set(mSession, LIBIRC_OPTION_STRIPNICKS);
 
@@ -51,10 +55,17 @@ Connection::Connection(std::string* pHostname, unsigned short usPort, std::strin
 	} else {
 		iret1 = pthread_create(&mThread, NULL, runSession, (void*) mSession);
 	}
+
+	DEBUG("Connstruct succesfull");
 }
 
 Connection::~Connection() {
 	pthread_join(mThread, NULL);
+}
+
+void Connection::changeNickname(std::string* pNickname){
+	mNickname = *pNickname;
+	irc_cmd_nick(mSession, mNickname.c_str());
 }
 
 } /* namespace ircbot */

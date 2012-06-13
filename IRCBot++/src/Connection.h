@@ -24,6 +24,8 @@ public:
 	Connection(std::string* pHostname, unsigned short usPort, std::string* pNickname, std::string* pChannel = 0);
 	virtual ~Connection();
 
+	void changeNickname(std::string* pNickname);
+
 	std::string mHostname;
 	std::string mNickname;
 	std::string mChannel;
