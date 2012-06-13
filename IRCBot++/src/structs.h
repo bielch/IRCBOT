@@ -14,16 +14,16 @@
 namespace ircbot {
 
 class Connection;
-class Database;
 class Controller;
+class Log;
 
 struct ircbot_context {
 	Connection* pConnection;
-	Database* pDatabase;
 	Controller* pController;
+	Log* pLog;
 };
 
-struct connection_context{
+struct connection_context {
 	std::string dHostname;
 	std::string dNickname;
 	std::string dChannel;

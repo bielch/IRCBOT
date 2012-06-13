@@ -6,6 +6,7 @@
  */
 
 #include "Connection.h"
+#include "Log.h"
 #include "function.h"
 #include "debug.h"
 #include <string.h>
@@ -13,8 +14,14 @@
 namespace ircbot {
 
 Connection::Connection(std::string* pHostname, unsigned short usPort, std::string* pNickname, std::string* pChannel) :
-		mHostname(*pHostname), mNickname(*pNickname), mChannel(*pChannel), mPort(usPort) {
+		mHostname(*pHostname), mNickname(*pNickname), mPort(usPort) {
 
+	DEBUG("connection constructor");
+
+	if(pChannel)
+		mChannel = *pChannel;
+
+	mContext.pLog = &Log::getInstance();
 	mContext.pConnection = this;
 
 	// Initialize the callbacks

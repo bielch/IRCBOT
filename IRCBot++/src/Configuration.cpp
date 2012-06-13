@@ -62,6 +62,7 @@ void Configuration::loadParameter(int pVarcount, char* pValues[]) {
 			mData.back()->dHostname = pValues[i + 1];
 			mData.back()->dNickname = mNickname;
 		} else if (line.compare(0, 2, "-c") == 0 && line.size() == 2 && i + 1 < pVarcount) {
+			//mData.back()->dChannel = "#";
 			mData.back()->dChannel = pValues[i + 1];
 		} else if (line.compare(0, 2, "-p") == 0 && line.size() == 2 && i + 1 < pVarcount) {
 			mData.back()->dPort = atoi(pValues[i + 1]);

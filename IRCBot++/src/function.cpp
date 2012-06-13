@@ -8,6 +8,8 @@
 #include "function.h"
 #include "structs.h"
 #include "Connection.h"
+#include "Log.h"
+#include "debug.h"
 
 namespace ircbot {
 
@@ -50,37 +52,44 @@ void removeWhitespaces(std::string& pString) {
 			pString.erase(i, 1);
 }
 
-void event_join(irc_session_t * session, const char * event,
-		const char * origin, const char ** params, unsigned int count) {
+void event_join(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {
 
 	if (!origin)
 		return;
+
+	DEBUG("join event");
 }
 
-void event_connect(irc_session_t * session, const char * event,
-		const char * origin, const char ** params, unsigned int count) {
+void event_connect(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {
 	struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
-		 irc_cmd_join(session, ctx->pConnection->mChannel.c_str(), 0);
+	irc_cmd_join(session, ctx->pConnection->mChannel.c_str(), 0);
 }
 
-void event_quit(irc_session_t * session, const char * event,
-		const char * origin, const char ** params, unsigned int count) {
+void event_quit(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {
 
 	if (!origin)
 		return;
 }
 
-void event_channel_notice(irc_session_t * session, const char * event,
-		const char * origin, const char ** params, unsigned int count) {
+void event_channel_notice(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {
 
 	if (!origin || count != 2)
 		return;
 
 	struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
+	std::string message = params[1];
+	std::string user = origin;
 
-	 printf("%s\n", params[1]);
+	printf("%s\n", message.c_str());
 
-	 /*if(!existUser(ctx->dbhandle, origin)){
+	ctx->pLog->logMessage(&message);
+
+	if (!ctx->pLog->mDatabase->existUser(&user))
+		ctx->pLog->mDatabase->createUser(&user);
+
+	ctx->pLog->mDatabase->updateUser(&user);
+
+	/*if(!existUser(ctx->dbhandle, origin)){
 	 createUser(ctx->dbhandle, origin);
 	 }
 	 updateUser(ctx->dbhandle, origin);
@@ -96,18 +105,14 @@ void event_channel_notice(irc_session_t * session, const char * event,
 
 }
 
-void event_numeric(irc_session_t * session, unsigned int event,
-		const char * origin, const char ** params, unsigned int count) {
+void event_numeric(irc_session_t * session, unsigned int event, const char * origin, const char ** params, unsigned int count) {
 	if (event > 400) {
-		printf("ERROR %d: %s: %s %s %s %s\n", event,
-				origin ? origin : "unknown", params[0],
-				count > 1 ? params[1] : "", count > 2 ? params[2] : "",
-				count > 3 ? params[3] : "");
+		printf("ERROR %d: %s: %s %s %s %s\n", event, origin ? origin : "unknown", params[0], count > 1 ? params[1] : "", count > 2 ? params[2] : "", count > 3 ? params[3] : "");
 	}
 }
 
 void *runSession(void *ptr) {
-	return (void*)irc_run((irc_session_s*) ptr);
+	return (void*) irc_run((irc_session_s*) ptr);
 }
 
 }

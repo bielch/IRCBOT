@@ -7,7 +7,7 @@
 
 #include "Database.h"
 #include <stdio.h>
-#define DB_FILE "/etc/ircbot/log.sqlite"
+#define DB_FILE "./log/log.sqlite"
 
 namespace ircbot {
 

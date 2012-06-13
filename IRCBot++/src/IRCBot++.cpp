@@ -1,10 +1,13 @@
 #include "Controller.h"
 #include "Configuration.h"
+#include "debug.h"
 
 using namespace std;
 using namespace ircbot;
 
 int main(int argc, char* argv[]) {
+
+	DEBUG("Arg count: " << argc);
 
 	std::string configFilePath("./config.cfg");
 
