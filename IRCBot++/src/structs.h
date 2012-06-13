@@ -8,6 +8,9 @@
 #ifndef STRUCTS_H_
 #define STRUCTS_H_
 
+#include <string>
+#include <vector>
+
 namespace ircbot {
 
 class Server;
@@ -20,6 +23,13 @@ struct ircbot_context {
 	Server* pServer;
 	Database* pDatabase;
 	Controller* pController;
+};
+
+struct server_context{
+	std::string dHostname;
+	std::string dNickname;
+	std::vector<std::string*> dChannel;
+	unsigned short dPort;
 };
 
 }

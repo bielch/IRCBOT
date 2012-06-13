@@ -9,7 +9,8 @@
 
 namespace ircbot {
 
-Server::Server() {
+Server::Server(const std::string* pHostname, unsigned short usPort, std::string* pNickname) :
+		mNickname(pNickname), mHostname(*pHostname), mPort(usPort) {
 	// TODO Auto-generated constructor stub
 
 }

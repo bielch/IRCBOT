@@ -9,7 +9,9 @@
 #define CONFIGURATION_H_
 
 #include "Controller.h"
+#include "structs.h"
 #include <stdio.h>
+#include <vector>
 #include <string>
 
 namespace ircbot {
@@ -25,7 +27,12 @@ protected:
 	virtual ~Configuration();
 
 	static Configuration* mObject;
+
 	Controller& mController;
+	std::string mNickname;
+	std::vector<server_context*> mData;
+	bool mDeamonize;
+	bool mLog;
 };
 
 } /* namespace ircbot */

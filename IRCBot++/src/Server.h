@@ -16,10 +16,10 @@ namespace ircbot {
 class Server {
 	friend class Channel;
 public:
-	Server();
+	Server(const std::string* pHostname, unsigned short usPort, std::string* pNickname);
 	virtual ~Server();
 protected:
-	std::string mNickname;
+	std::string* mNickname;
 	std::string mHostname;
 
 	unsigned short mPort;

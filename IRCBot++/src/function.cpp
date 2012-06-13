@@ -110,7 +110,7 @@ void event_numeric(irc_session_t * session, unsigned int event,
 }
 
 void *runSession(void *ptr) {
-	irc_run((irc_session_s*) ptr);
+	return (void*)irc_run((irc_session_s*) ptr);
 }
 
 }

@@ -11,8 +11,8 @@ int main(int argc, char* argv[]) {
 	Controller& controller = Controller::getInstance();
 	Configuration& configuration = Configuration::getInstance();
 
-	configuration.loadConfigurationFile(&configFilePath);
 	configuration.loadParameter(argc, argv);
+	configuration.loadConfigurationFile(&configFilePath);
 
 	while (controller.getServerCount() > 0)
 		sleep(1000);
