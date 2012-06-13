@@ -58,7 +58,7 @@ void Configuration::loadParameter(int pVarcount, char* pValues[]) {
 		line = pValues[i];
 
 		if (line.compare(0, 2, "-s") == 0 && line.size() == 2 && i + 1 < pVarcount) {
-			mData.push_back(new server_context);
+			mData.push_back(new connection_context);
 			mData.back()->dHostname = pValues[i + 1];
 		} else if (line.compare(0, 2, "-c") == 0 && line.size() == 2 && i + 1 < pVarcount) {
 			mData.back()->dChannel.push_back(new std::string(pValues[i + 1]));

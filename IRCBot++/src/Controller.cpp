@@ -6,6 +6,7 @@
  */
 
 #include "Controller.h"
+#include "Configuration.h"
 #include "function.h"
 #include "debug.h"
 #include <cstdlib>
@@ -30,22 +31,45 @@ Controller& Controller::getInstance() {
 	return *mObject;
 }
 
-int Controller::getServerCount() const {
-	return mServer.size();
+int Controller::getServerCount()  {
+	return mConnection.size();
 }
 
-void Controller::joinServer(const std::string* pHostname, unsigned short usPort) {
-	mServer.push_back(new Server(pHostname, usPort, &mNickname));
+void Controller::joinServer( std::string* pHostname, unsigned short usPort) {
+	mConnection.push_back(new Connection(pHostname, usPort, &mNickname));
 }
-void Controller::joinChannel(const std::string* pHostname, const std::string* pChannel) const {
+
+void Controller::joinChannel(std::string* pHostname, unsigned short usPort, std::string* pChannel) {
+	for(unsigned int i = 0; i < mConnection.size(); i++){
+		if(mConnection.at(i)->mHostname.compare(*pHostname) == 0){
+			//mConnection.at(i)->
+		}
+	}
 }
-void Controller::isConnectedToServer(const std::string* pHostname) const {
+
+void Controller::isConnectedToServer( std::string* pHostname)  {
 }
-void Controller::isConnectedToCannel(const std::string* pHostname, const std::string* pChannel) const {
+
+void Controller::isConnectedToCannel( std::string* pHostname,  std::string* pChannel)  {
 }
-void Controller::leaveServer(const std::string* pHostname) {
+
+void Controller::leaveServer( std::string* pHostname) {
 }
-void Controller::leaveChannel(const std::string* pHostname, const std::string* pChannel) const {
+
+void Controller::leaveChannel( std::string* pHostname,  std::string* pChannel)  {
+}
+
+void Controller::startup() {
+	Configuration& config = Configuration::getInstance();
+
+	for (unsigned int i = 0; i < config.mData.size(); i++) {
+		if (config.mData.at(i)->dChannel.size() == 0) {
+			joinServer(&config.mData.at(i)->dHostname, config.mData.at(i)->dPort);
+		} else {
+			for (unsigned int j = 0; j < config.mData.at(i)->dChannel.size(); j++)
+				joinChannel(&config.mData.at(i)->dHostname, config.mData.at(i)->dPort, config.mData.at(i)->dChannel.at(j));
+		}
+	}
 }
 
 void Controller::executeCommand(std::string* pCommand) {

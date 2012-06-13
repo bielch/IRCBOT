@@ -5,17 +5,14 @@
  *      Author: develop
  */
 
-#include "Channel.h"
+#include "Connection.h"
 #include "function.h"
-#include "Server.h"
 #include <string.h>
 
 namespace ircbot {
 
-Channel::Channel(Server* pServer, const std::string* pChannel) : mServer(pServer),
-		mChannel(*pChannel) {
-
-
+Connection::Connection(std::string* pHostname, unsigned short usPort, std::string* pNickname, std::string* pChannel) :
+		mHostname(*pHostname), mNickname(*pNickname), mChannel(*pChannel), mPort(usPort) {
 
 	// Initialize the callbacks
 	memset(&mCallbacks, 0, sizeof(mCallbacks));
@@ -37,14 +34,14 @@ Channel::Channel(Server* pServer, const std::string* pChannel) : mServer(pServer
 	irc_option_set(mSession, LIBIRC_OPTION_STRIPNICKS);
 
 	// Initiate the IRC server connection
-	if (irc_connect(mSession, mServer->mHostname.c_str(), mServer->mPort, 0, mNickname.c_str(), 0, 0)) {
+	if (irc_connect(mSession, mHostname.c_str(), mPort, 0, mNickname.c_str(), 0, 0)) {
 		printf("Could not connect: %s\n", irc_strerror(irc_errno(mSession)));
 	} else {
 		iret1 = pthread_create(&mThread, NULL, runSession, (void*) mSession);
 	}
 }
 
-Channel::~Channel() {
+Connection::~Connection() {
 	pthread_join(mThread, NULL);
 }
 

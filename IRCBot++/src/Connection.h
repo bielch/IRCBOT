@@ -18,13 +18,14 @@ namespace ircbot {
 
 class Server;
 
-class Channel {
+class Connection {
+	friend class Controller;
 public:
-	Channel(Server* pServer, const std::string* pChannel);
-	virtual ~Channel();
+	Connection(std::string* pHostname, unsigned short usPort, std::string* pNickname, std::string* pChannel = 0);
+	virtual ~Connection();
 
 protected:
-	Server* mServer;
+	std::string mHostname;
 	std::string mNickname;
 	std::string mChannel;
 
@@ -36,6 +37,7 @@ protected:
 	pthread_t mThread;
 
 	int iret1;
+	unsigned short mPort;
 
 };
 

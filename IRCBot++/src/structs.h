@@ -14,18 +14,18 @@
 namespace ircbot {
 
 class Server;
-class Channel;
+class Connection;
 class Database;
 class Controller;
 
 struct ircbot_context {
-	Channel* pChannel;
+	Connection* pChannel;
 	Server* pServer;
 	Database* pDatabase;
 	Controller* pController;
 };
 
-struct server_context{
+struct connection_context{
 	std::string dHostname;
 	std::string dNickname;
 	std::vector<std::string*> dChannel;

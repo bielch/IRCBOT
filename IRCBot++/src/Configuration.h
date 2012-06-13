@@ -17,6 +17,7 @@
 namespace ircbot {
 
 class Configuration {
+	friend class Controller;
 public:
 	static Configuration& getInstance();
 	void loadConfigurationFile(const std::string* pFilename);
@@ -30,7 +31,7 @@ protected:
 
 	Controller& mController;
 	std::string mNickname;
-	std::vector<server_context*> mData;
+	std::vector<connection_context*> mData;
 	bool mDeamonize;
 	bool mLog;
 };
