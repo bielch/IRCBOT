@@ -14,7 +14,7 @@ namespace ircbot {
 Configuration* Configuration::mObject = 0;
 
 Configuration::Configuration() :
-		mController(Controller::getInstance()), mNickname("IRCBot++"), mDeamonize(false), mLog(false) {
+		mController(Controller::getInstance()), mNickname("ircbot"), mDeamonize(false), mLog(false) {
 
 }
 
@@ -60,8 +60,9 @@ void Configuration::loadParameter(int pVarcount, char* pValues[]) {
 		if (line.compare(0, 2, "-s") == 0 && line.size() == 2 && i + 1 < pVarcount) {
 			mData.push_back(new connection_context);
 			mData.back()->dHostname = pValues[i + 1];
+			mData.back()->dNickname = mNickname;
 		} else if (line.compare(0, 2, "-c") == 0 && line.size() == 2 && i + 1 < pVarcount) {
-			mData.back()->dChannel.push_back(new std::string(pValues[i + 1]));
+			mData.back()->dChannel = pValues[i + 1];
 		} else if (line.compare(0, 2, "-p") == 0 && line.size() == 2 && i + 1 < pVarcount) {
 			mData.back()->dPort = atoi(pValues[i + 1]);
 		} else if (line.compare(0, 7, "-deamon") == 0 && line.size() == 7) {

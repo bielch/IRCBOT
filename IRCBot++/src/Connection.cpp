@@ -7,12 +7,15 @@
 
 #include "Connection.h"
 #include "function.h"
+#include "debug.h"
 #include <string.h>
 
 namespace ircbot {
 
 Connection::Connection(std::string* pHostname, unsigned short usPort, std::string* pNickname, std::string* pChannel) :
 		mHostname(*pHostname), mNickname(*pNickname), mChannel(*pChannel), mPort(usPort) {
+
+	mContext.pConnection = this;
 
 	// Initialize the callbacks
 	memset(&mCallbacks, 0, sizeof(mCallbacks));

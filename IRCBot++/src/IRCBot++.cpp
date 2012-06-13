@@ -14,6 +14,8 @@ int main(int argc, char* argv[]) {
 	configuration.loadParameter(argc, argv);
 	configuration.loadConfigurationFile(&configFilePath);
 
+	controller.startup();
+
 	while (controller.getServerCount() > 0)
 		sleep(1000);
 

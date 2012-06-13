@@ -6,6 +6,8 @@
  */
 
 #include "function.h"
+#include "structs.h"
+#include "Connection.h"
 
 namespace ircbot {
 
@@ -57,13 +59,8 @@ void event_join(irc_session_t * session, const char * event,
 
 void event_connect(irc_session_t * session, const char * event,
 		const char * origin, const char ** params, unsigned int count) {
-	/*struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
-	 struct ircbot_channel* temp = ctx->channel;
-
-	 while (temp != NULL) {
-	 irc_cmd_join(session, temp->name, 0);
-	 temp = temp->nextchannel;
-	 }*/
+	struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
+		 irc_cmd_join(session, ctx->pConnection->mChannel.c_str(), 0);
 }
 
 void event_quit(irc_session_t * session, const char * event,
@@ -79,11 +76,11 @@ void event_channel_notice(irc_session_t * session, const char * event,
 	if (!origin || count != 2)
 		return;
 
-	/*struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
+	struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
 
 	 printf("%s\n", params[1]);
 
-	 if(!existUser(ctx->dbhandle, origin)){
+	 /*if(!existUser(ctx->dbhandle, origin)){
 	 createUser(ctx->dbhandle, origin);
 	 }
 	 updateUser(ctx->dbhandle, origin);
@@ -94,7 +91,7 @@ void event_channel_notice(irc_session_t * session, const char * event,
 	 }
 	 /char* temp = malloc(sizeof(char)* strlen(params[1]));
 	 memset(temp, 0, strlen(params[1]));
-	 memcpy(temp, params[1], strlen(params[1]));*
+	 memcpy(temp, params[1], strlen(params[1]));
 	 processCommand(session, ctx, params[1]);*/
 
 }

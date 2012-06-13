@@ -20,8 +20,8 @@ public:
 
 	void startup();
 	void executeCommand(std::string* pCommand);
-	void joinServer(std::string* pHostname, unsigned short usPort);
-	void joinChannel(std::string* pHostname, unsigned short usPort, std::string* pChannel);
+	void joinServer(std::string* pHostname, unsigned short usPort, std::string* pNickname);
+	void joinChannel(std::string* pHostname, unsigned short usPort, std::string* pChannel, std::string* pNickname);
 	void isConnectedToServer(std::string* pHostname);
 	void isConnectedToCannel(std::string* pHostname, std::string* pChannel);
 	void leaveServer(std::string* pHostname);
@@ -35,8 +35,6 @@ protected:
 	static Controller* mObject;
 
 	std::vector<Connection*> mConnection;
-	std::string mNickname;
-
 };
 
 } /* namespace ircbot */
