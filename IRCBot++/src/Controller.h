@@ -19,7 +19,7 @@ public:
 	static Controller& getInstance();
 
 	void startup();
-	void executeCommand(std::string* pCommand, ircbot_context* context = 0);
+	void executeCommand(std::string* pCommand, ircbot_context* context = 0, std::string* origin = 0);
 	void joinServer(std::string* pHostname, unsigned short usPort, std::string* pNickname);
 	void joinChannel(std::string* pHostname, unsigned short usPort, std::string* pChannel, std::string* pNickname);
 	void isConnectedToServer(std::string* pHostname);

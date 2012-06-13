@@ -7,9 +7,13 @@
 
 #include "Controller.h"
 #include "Configuration.h"
+#include "Log.h"
 #include "function.h"
 #include "debug.h"
+#include <string>
+#include <sstream>
 #include <cstdlib>
+#include <stdlib.h>
 
 namespace ircbot {
 
@@ -67,10 +71,12 @@ void Controller::startup() {
 	}
 }
 
-void Controller::executeCommand(std::string* pCommand, ircbot_context* context) {
+void Controller::executeCommand(std::string* pCommand, ircbot_context* context, std::string* origin) {
 	size_t equal;
 	std::string command;
 	std::string payload;
+	std::string message;
+	std::stringstream messagestream;
 
 	removeFrontWhitespaces(*pCommand);
 
@@ -89,18 +95,45 @@ void Controller::executeCommand(std::string* pCommand, ircbot_context* context) 
 		if (command.compare("log") == 0) {
 			removeWhitespaces(payload);
 
-			if (payload.compare("0") == 0)
+			if (payload.compare("0") == 0){
+				messagestream << "log disabled.";
 				Configuration::getInstance().mLog = false;
+			}
 
-			if (payload.compare("1") == 0)
+			if (payload.compare("1") == 0){
+				messagestream << "log enabled.";
 				Configuration::getInstance().mLog = true;
+			}
 		}
 
-		if(command.compare("nickname") == 0){
-			context->pConnection->
+		if (command.compare("nickname") == 0) {
+			messagestream << "Changed nickname to: " << payload;
+
+			removeFrontWhitespaces(payload);
+			context->pConnection->changeNickname(&payload);
 		}
 
+		if (command.compare("lastseen") == 0) {
+			removeFrontWhitespaces(payload);
+
+			messagestream << "Lastseen " << payload << " " << Log::getInstance().mDatabase->getUser(&payload);
+		}
+
+		if (command.compare("jchannel") == 0) {
+			removeFrontWhitespaces(payload);
+			std::string host = payload.substr(0, payload.find(' '));
+			std::string channel = payload.substr(payload.find(' ', payload.find(' ')), payload.size() - payload.find(' ', payload.find(' ')));
+			unsigned short port = std::atoi(payload.substr(payload.find(' '), payload.find(' ', payload.find(' '))).c_str());
+
+
+			removeWhitespaces(host);
+			removeWhitespaces(channel);
+
+			joinChannel(&host, port, &channel, &Configuration::getInstance().mNickname);
+		}
 	}
+	message = messagestream.str();
+	context->pConnection->sendMsg(&message, origin);
 }
 
 void Controller::removeConnection(Connection* pConnection) {

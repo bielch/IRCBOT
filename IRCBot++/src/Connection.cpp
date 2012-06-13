@@ -19,7 +19,7 @@ Connection::Connection(std::string* pHostname, unsigned short usPort, std::strin
 
 	DEBUG("connection constructor");
 
-	if(pChannel)
+	if (pChannel)
 		mChannel = *pChannel;
 
 	mContext.pLog = &Log::getInstance();
@@ -42,7 +42,7 @@ Connection::Connection(std::string* pHostname, unsigned short usPort, std::strin
 	// And create the IRC session; 0 means error
 	mSession = irc_create_session(&mCallbacks);
 
-	if(!mSession){
+	if (!mSession) {
 		DEBUG("Session konnte nicht erzeugt werden.");
 	}
 
@@ -63,9 +63,12 @@ Connection::~Connection() {
 	pthread_join(mThread, NULL);
 }
 
-void Connection::changeNickname(std::string* pNickname){
+void Connection::changeNickname(std::string* pNickname) {
 	mNickname = *pNickname;
 	irc_cmd_nick(mSession, mNickname.c_str());
 }
 
+void Connection::sendMsg(std::string* pMessage, std::string* pTarget) {
+	irc_cmd_msg(mSession, pTarget->c_str(), pMessage->c_str());
+}
 } /* namespace ircbot */

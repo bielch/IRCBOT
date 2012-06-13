@@ -67,6 +67,9 @@ void event_join(irc_session_t * session, const char * event, const char * origin
 		return;
 
 	DEBUG("join event");
+
+	//struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
+	irc_cmd_join(session, "#asdf", 0);
 }
 
 void event_connect(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {
@@ -105,7 +108,7 @@ void event_channel_notice(irc_session_t * session, const char * event, const cha
 	if (message.compare(0, ctx->pConnection->mNickname.size(), ctx->pConnection->mNickname) == 0) {
 		command = message.substr(ctx->pConnection->mNickname.size(), message.size() - ctx->pConnection->mNickname.size());
 		DEBUG("Command:" << command);
-		ctx->pController->executeCommand(&command, ctx);
+		ctx->pController->executeCommand(&command, ctx, &user);
 	}
 
 }

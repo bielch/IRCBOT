@@ -21,6 +21,7 @@ public:
 	void createTable();
 	int existTable();
 	int existUser(std::string* user);
+	int getUser(std::string* user);
 	void createUser(std::string* user);
 	void updateUser(std::string* user);
 	void logx(std::string* msg);

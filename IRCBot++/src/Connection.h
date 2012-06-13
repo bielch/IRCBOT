@@ -25,6 +25,7 @@ public:
 	virtual ~Connection();
 
 	void changeNickname(std::string* pNickname);
+	void sendMsg(std::string* pMessage, std::string* pTarget);
 
 	std::string mHostname;
 	std::string mNickname;

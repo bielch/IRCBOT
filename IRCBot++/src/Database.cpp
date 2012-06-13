@@ -56,6 +56,21 @@ int Database::existUser(std::string* user) {
 	return result;
 }
 
+int Database::getUser(std::string* user) {
+	char * query = sqlite3_mprintf("SELECT lastseen FROM lastseen WHERE user = '%s'", user->c_str());
+
+	int result = 0;
+	sqlite3_stmt* vm;
+
+	sqlite3_prepare(mHandle, query, -1, &vm, NULL);
+	while (sqlite3_step(vm) != SQLITE_DONE) {
+		result = sqlite3_column_int(vm, 0);
+	}
+	sqlite3_finalize(vm);
+
+	return result;
+}
+
 void Database::createUser(std::string* user) {
 	char * query = sqlite3_mprintf("INSERT INTO lastseen (user, lastseen) VALUES ('%s', '0')", user->c_str());
 	sqlite3_exec(mHandle, query, NULL, NULL, NULL);
