@@ -10,7 +10,7 @@
 
 #include <string>
 #include <vector>
-#include "Connection.h"
+#include "Server.h"
 
 namespace ircbot {
 
@@ -21,12 +21,12 @@ public:
 	void startup();
 	void executeCommand(std::string* pCommand, ircbot_context* context = 0, std::string* origin = 0);
 	void joinServer(std::string* pHostname, unsigned short usPort, std::string* pNickname);
-	void joinChannel(std::string* pHostname, unsigned short usPort, std::string* pChannel, std::string* pNickname);
+	void joinChannel(std::string* pChannel);
 	void isConnectedToServer(std::string* pHostname);
 	void isConnectedToCannel(std::string* pHostname, std::string* pChannel);
 	void leaveServer(std::string* pHostname);
 	void leaveChannel(std::string* pHostname, std::string* pChannel);
-	void removeConnection(Connection* pConnection);
+	void removeConnection(Server* pConnection);
 	int getServerCount();
 
 protected:
@@ -35,7 +35,7 @@ protected:
 
 	static Controller* mObject;
 
-	std::vector<Connection*> mConnection;
+	std::vector<Server*> mConnection;
 };
 
 } /* namespace ircbot */

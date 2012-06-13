@@ -16,20 +16,21 @@
 
 namespace ircbot {
 
-class Server;
-
-class Connection {
+class Server {
 	friend class Controller;
 public:
-	Connection(std::string* pHostname, unsigned short usPort, std::string* pNickname, std::string* pChannel = 0);
-	virtual ~Connection();
+	Server(std::string* pHostname, unsigned short usPort, std::string* pNickname);
+	virtual ~Server();
 
 	void changeNickname(std::string* pNickname);
 	void sendMsg(std::string* pMessage, std::string* pTarget);
+	void joinChannel(std::string* pChannel);
+	void leaveChannel(std::string* pChannel);
+	void leaveServer();
 
 	std::string mHostname;
 	std::string mNickname;
-	std::string mChannel;
+	std::vector<std::string*> mChannel;
 
 	irc_callbacks_t mCallbacks;
 	irc_session_t * mSession;

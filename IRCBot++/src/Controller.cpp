@@ -40,11 +40,12 @@ int Controller::getServerCount() {
 }
 
 void Controller::joinServer(std::string* pHostname, unsigned short usPort, std::string* pNickname) {
-	mConnection.push_back(new Connection(pHostname, usPort, pNickname));
+	mConnection.push_back(new Server(pHostname, usPort, pNickname));
 }
 
-void Controller::joinChannel(std::string* pHostname, unsigned short usPort, std::string* pChannel, std::string* pNickname) {
-	mConnection.push_back(new Connection(pHostname, usPort, pNickname, pChannel));
+void Controller::joinChannel(std::string* pChannel) {
+	if (mConnection.size() != 0)
+		mConnection.back()->joinChannel(pChannel);
 }
 
 void Controller::isConnectedToServer(std::string* pHostname) {
@@ -63,11 +64,10 @@ void Controller::startup() {
 	Configuration& config = Configuration::getInstance();
 
 	for (unsigned int i = 0; i < config.mData.size(); i++) {
-		if (config.mData.at(i)->dChannel.size() == 0) {
-			joinServer(&config.mData.at(i)->dHostname, config.mData.at(i)->dPort, &config.mData.at(i)->dNickname);
-		} else {
-			joinChannel(&config.mData.at(i)->dHostname, config.mData.at(i)->dPort, &config.mData.at(i)->dChannel, &config.mData.at(i)->dNickname);
-		}
+		joinServer(&config.mData[i]->dHostname, config.mData[i]->dPort, &config.mData[i]->dNickname);
+
+		for (unsigned int j = 0; j < config.mData[i]->dChannel.size(); j++)
+			joinChannel(config.mData[i]->dChannel[j]);
 	}
 }
 
@@ -95,12 +95,12 @@ void Controller::executeCommand(std::string* pCommand, ircbot_context* context, 
 		if (command.compare("log") == 0) {
 			removeWhitespaces(payload);
 
-			if (payload.compare("0") == 0){
+			if (payload.compare("0") == 0) {
 				messagestream << "log disabled.";
 				Configuration::getInstance().mLog = false;
 			}
 
-			if (payload.compare("1") == 0){
+			if (payload.compare("1") == 0) {
 				messagestream << "log enabled.";
 				Configuration::getInstance().mLog = true;
 			}
@@ -121,24 +121,18 @@ void Controller::executeCommand(std::string* pCommand, ircbot_context* context, 
 
 		if (command.compare("jchannel") == 0) {
 			removeFrontWhitespaces(payload);
-			std::string host = payload.substr(0, payload.find(' '));
-			std::string channel = payload.substr(payload.find(' ', payload.find(' ')), payload.size() - payload.find(' ', payload.find(' ')));
-			unsigned short port = std::atoi(payload.substr(payload.find(' '), payload.find(' ', payload.find(' '))).c_str());
+			messagestream << "joined channel: " << payload;
 
-
-			removeWhitespaces(host);
-			removeWhitespaces(channel);
-
-			joinChannel(&host, port, &channel, &Configuration::getInstance().mNickname);
+			context->pConnection->joinChannel(&payload);
 		}
 	}
 	message = messagestream.str();
 	context->pConnection->sendMsg(&message, origin);
 }
 
-void Controller::removeConnection(Connection* pConnection) {
+void Controller::removeConnection(Server* pConnection) {
 	for (unsigned int i = 0; i < mConnection.size(); i++)
-		if (mConnection.at(i) == pConnection) {
+		if (mConnection[i] == pConnection) {
 			mConnection.erase(mConnection.begin() + i);
 
 			delete pConnection;

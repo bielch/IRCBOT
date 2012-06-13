@@ -7,7 +7,7 @@
 
 #include "function.h"
 #include "structs.h"
-#include "Connection.h"
+#include "Server.h"
 #include "Controller.h"
 #include "Log.h"
 #include "debug.h"
@@ -74,7 +74,9 @@ void event_join(irc_session_t * session, const char * event, const char * origin
 
 void event_connect(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {
 	struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
-	irc_cmd_join(session, ctx->pConnection->mChannel.c_str(), 0);
+
+	for (unsigned int i = 0; i < ctx->pConnection->mChannel.size(); i++)
+		irc_cmd_join(session, ctx->pConnection->mChannel[i]->c_str(), 0);
 }
 
 void event_quit(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {

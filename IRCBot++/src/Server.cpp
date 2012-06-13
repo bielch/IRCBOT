@@ -5,7 +5,7 @@
  *      Author: develop
  */
 
-#include "Connection.h"
+#include "Server.h"
 #include "Controller.h"
 #include "Log.h"
 #include "function.h"
@@ -14,13 +14,10 @@
 
 namespace ircbot {
 
-Connection::Connection(std::string* pHostname, unsigned short usPort, std::string* pNickname, std::string* pChannel) :
+Server::Server(std::string* pHostname, unsigned short usPort, std::string* pNickname) :
 		mHostname(*pHostname), mNickname(*pNickname), mPort(usPort) {
 
 	DEBUG("connection constructor");
-
-	if (pChannel)
-		mChannel = *pChannel;
 
 	mContext.pLog = &Log::getInstance();
 	mContext.pController = &Controller::getInstance();
@@ -59,16 +56,26 @@ Connection::Connection(std::string* pHostname, unsigned short usPort, std::strin
 	DEBUG("Connstruct succesfull");
 }
 
-Connection::~Connection() {
+Server::~Server() {
 	pthread_join(mThread, NULL);
 }
 
-void Connection::changeNickname(std::string* pNickname) {
+void Server::changeNickname(std::string* pNickname) {
 	mNickname = *pNickname;
 	irc_cmd_nick(mSession, mNickname.c_str());
 }
 
-void Connection::sendMsg(std::string* pMessage, std::string* pTarget) {
+void Server::sendMsg(std::string* pMessage, std::string* pTarget) {
 	irc_cmd_msg(mSession, pTarget->c_str(), pMessage->c_str());
+}
+
+void Server::joinChannel(std::string* pChannel) {
+	for (unsigned int i = 0; i < mChannel.size(); i++)
+		if (mChannel[i]->compare(*pChannel) == 0)
+			return;
+}
+
+void Server::leaveChannel(std::string* pChannel) {
+
 }
 } /* namespace ircbot */

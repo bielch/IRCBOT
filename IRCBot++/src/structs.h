@@ -13,12 +13,12 @@
 
 namespace ircbot {
 
-class Connection;
+class Server;
 class Controller;
 class Log;
 
 struct ircbot_context {
-	Connection* pConnection;
+	Server* pConnection;
 	Controller* pController;
 	Log* pLog;
 };
@@ -26,7 +26,7 @@ struct ircbot_context {
 struct connection_context {
 	std::string dHostname;
 	std::string dNickname;
-	std::string dChannel;
+	std::vector<std::string*> dChannel;
 	unsigned short dPort;
 };
 
