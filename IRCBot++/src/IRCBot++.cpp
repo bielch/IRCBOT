@@ -19,8 +19,9 @@ int main(int argc, char* argv[]) {
 
 	controller.startup();
 
-	while (controller.getServerCount() > 0)
-		sleep(1000);
+	while (controller.getServerCount() > 0){
+		sleep(10);
+	}
 
 
 	return 0;

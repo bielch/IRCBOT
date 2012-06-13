@@ -6,6 +6,7 @@
  */
 
 #include "Connection.h"
+#include "Controller.h"
 #include "Log.h"
 #include "function.h"
 #include "debug.h"
@@ -22,6 +23,7 @@ Connection::Connection(std::string* pHostname, unsigned short usPort, std::strin
 		mChannel = *pChannel;
 
 	mContext.pLog = &Log::getInstance();
+	mContext.pController = &Controller::getInstance();
 	mContext.pConnection = this;
 
 	// Initialize the callbacks

@@ -19,13 +19,14 @@ public:
 	static Controller& getInstance();
 
 	void startup();
-	void executeCommand(std::string* pCommand);
+	void executeCommand(std::string* pCommand, ircbot_context* context = 0);
 	void joinServer(std::string* pHostname, unsigned short usPort, std::string* pNickname);
 	void joinChannel(std::string* pHostname, unsigned short usPort, std::string* pChannel, std::string* pNickname);
 	void isConnectedToServer(std::string* pHostname);
 	void isConnectedToCannel(std::string* pHostname, std::string* pChannel);
 	void leaveServer(std::string* pHostname);
 	void leaveChannel(std::string* pHostname, std::string* pChannel);
+	void removeConnection(Connection* pConnection);
 	int getServerCount();
 
 protected:

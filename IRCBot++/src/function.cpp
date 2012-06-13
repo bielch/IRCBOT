@@ -8,6 +8,7 @@
 #include "function.h"
 #include "structs.h"
 #include "Connection.h"
+#include "Controller.h"
 #include "Log.h"
 #include "debug.h"
 
@@ -89,24 +90,14 @@ void event_channel_notice(irc_session_t * session, const char * event, const cha
 
 	ctx->pLog->mDatabase->updateUser(&user);
 
-	/*if(!existUser(ctx->dbhandle, origin)){
-	 createUser(ctx->dbhandle, origin);
-	 }
-	 updateUser(ctx->dbhandle, origin);
-
-	 if(ctx->log){
-	 fileLog(ctx->logfile, params[1]);
-	 logx(ctx->dbhandle, params[1]);
-	 }
-	 /char* temp = malloc(sizeof(char)* strlen(params[1]));
-	 memset(temp, 0, strlen(params[1]));
-	 memcpy(temp, params[1], strlen(params[1]));
-	 processCommand(session, ctx, params[1]);*/
+	ctx->pController->executeCommand(message, ircbot_context);
 
 }
 
 void event_numeric(irc_session_t * session, unsigned int event, const char * origin, const char ** params, unsigned int count) {
 	if (event > 400) {
+		struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
+		ctx->pController->removeConnection(ctx->pConnection);
 		printf("ERROR %d: %s: %s %s %s %s\n", event, origin ? origin : "unknown", params[0], count > 1 ? params[1] : "", count > 2 ? params[2] : "", count > 3 ? params[3] : "");
 	}
 }

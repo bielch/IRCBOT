@@ -18,6 +18,7 @@ namespace ircbot {
 
 class Configuration {
 	friend class Controller;
+	friend class Log;
 public:
 	static Configuration& getInstance();
 	void loadConfigurationFile(const std::string* pFilename);

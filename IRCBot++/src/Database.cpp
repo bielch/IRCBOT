@@ -42,7 +42,7 @@ int Database::existTable() {
 }
 
 int Database::existUser(std::string* user) {
-	char * query = sqlite3_mprintf("SELECT * FROM lastseen WHERE user = '%s'", user);
+	char * query = sqlite3_mprintf("SELECT * FROM lastseen WHERE user = '%s'", user->c_str());
 
 	int result = 0;
 	sqlite3_stmt* vm;
@@ -57,17 +57,17 @@ int Database::existUser(std::string* user) {
 }
 
 void Database::createUser(std::string* user) {
-	char * query = sqlite3_mprintf("INSERT INTO lastseen (user, lastseen) VALUES ('%s', '0')", user);
+	char * query = sqlite3_mprintf("INSERT INTO lastseen (user, lastseen) VALUES ('%s', '0')", user->c_str());
 	sqlite3_exec(mHandle, query, NULL, NULL, NULL);
 }
 
 void Database::updateUser(std::string* user) {
-	char * query = sqlite3_mprintf("UPDATE lastseen SET lastseen = strftime('%%s', 'now') WHERE user = '%s'", user);
+	char * query = sqlite3_mprintf("UPDATE lastseen SET lastseen = strftime('%%s', 'now') WHERE user = '%s'", user->c_str());
 	sqlite3_exec(mHandle, query, NULL, NULL, NULL);
 }
 
 void Database::logx(std::string* msg) {
-	char * query = sqlite3_mprintf("INSERT INTO log (message) VALUES ('%s')", msg);
+	char * query = sqlite3_mprintf("INSERT INTO log (message) VALUES ('%s')", msg->c_str());
 	sqlite3_exec(mHandle, query, NULL, NULL, NULL);
 }
 

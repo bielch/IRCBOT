@@ -67,7 +67,7 @@ void Controller::startup() {
 	}
 }
 
-void Controller::executeCommand(std::string* pCommand) {
+void Controller::executeCommand(std::string* pCommand, ircbot_context* context) {
 	size_t equal;
 	std::string command;
 	std::string payload;
@@ -92,5 +92,14 @@ void Controller::executeCommand(std::string* pCommand) {
 		}
 
 	}
+}
+
+void Controller::removeConnection(Connection* pConnection) {
+	for (unsigned int i = 0; i < mConnection.size(); i++)
+		if (mConnection.at(i) == pConnection) {
+			mConnection.erase(mConnection.begin() + i);
+
+			delete pConnection;
+		}
 }
 } /* namespace ircbot */
