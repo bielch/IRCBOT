@@ -14,6 +14,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <stdlib.h>
+#include <time.h>
 
 namespace ircbot {
 
@@ -78,7 +79,8 @@ void Controller::executeCommand(std::string* pCommand, ircbot_context* context, 
 	std::string message = "No such command.";
 	std::stringstream messagestream;
 
-	context->pConnection->mlastCommandOrigin = *origin;
+	if (origin)
+		context->pConnection->mlastCommandOrigin = *origin;
 
 	if (parts.size() > 0) {
 
@@ -119,7 +121,13 @@ void Controller::executeCommand(std::string* pCommand, ircbot_context* context, 
 			if (parts.size() == 2) {
 				removeFrontWhitespaces(parts[1]);
 
-				messagestream << "Lastseen " << parts[1] << " " << Log::getInstance().mDatabase->getUser(&parts[1]);
+				time_t rawtime;
+				struct tm * timeinfo;
+
+				rawtime = Log::getInstance().mDatabase->getUser(&parts[1]);
+				timeinfo = localtime(&rawtime);
+
+				messagestream << "lastseen " << parts[1] << ": " << asctime(timeinfo);
 			} else {
 				messagestream << "Invalid use of command lastseen.";
 			}
@@ -130,7 +138,10 @@ void Controller::executeCommand(std::string* pCommand, ircbot_context* context, 
 				removeFrontWhitespaces(parts[1]);
 				messagestream << "joined channel: " << parts[1];
 
-				context->pConnection->joinChannel(&parts[1]);
+				if (context)
+					context->pConnection->joinChannel(&parts[1]);
+				else
+					mConnection.back()->joinChannel(&parts[1]);
 			} else if (parts.size() == 3) {
 				removeFrontWhitespaces(parts[1]);
 				messagestream << "joined channel: " << parts[1] << " on server: " << parts[2];
@@ -202,6 +213,12 @@ void Controller::executeCommand(std::string* pCommand, ircbot_context* context, 
 						messagestream.str("");
 						messagestream << "leaving server: " << parts[1];
 						mConnection[i]->leaveServer();
+
+						delete mConnection[i];
+
+						mConnection.erase(mConnection.begin() + i);
+
+						return;
 					}
 			} else {
 				messagestream << "Invalid use of command lchannel.";
@@ -215,6 +232,8 @@ void Controller::executeCommand(std::string* pCommand, ircbot_context* context, 
 			context->pConnection->sendMsg(&message, origin);
 
 			context->pConnection->leaveServer();
+
+			return;
 		}
 
 		if (parts[0].compare("serverlist") == 0) {
@@ -228,11 +247,41 @@ void Controller::executeCommand(std::string* pCommand, ircbot_context* context, 
 
 			messagestream.str("serverlist end.");
 		}
+
+		if (parts[0].compare("time") == 0) {
+			time_t rawtime;
+			struct tm * timeinfo;
+
+			time(&rawtime);
+			timeinfo = localtime(&rawtime);
+
+			messagestream << asctime(timeinfo);
+		}
+
+		if (parts[0].compare("showlog") == 0) {
+			DEBUG(mConnection.size())
+
+			std::fstream file;
+			std::string line;
+			file.open(LOG_FILE, std::fstream::in);
+
+			if (file.is_open()) {
+				while (file.good()) {
+					getline(file, line);
+					context->pConnection->sendMsg(&line, origin);
+				}
+
+				file.close();
+			}
+
+			messagestream.str("log end.");
+		}
 	}
 	if (messagestream.str().length() > 0)
 		message = messagestream.str();
 
-	context->pConnection->sendMsg(&message, origin);
+	if (origin)
+		context->pConnection->sendMsg(&message, origin);
 }
 
 void Controller::removeConnection(Server* pConnection) {

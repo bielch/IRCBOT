@@ -9,7 +9,6 @@
 #include "Configuration.h"
 #include "debug.h"
 #include <stdlib.h>
-#define LOG_FILE "./log/log.log"
 
 namespace ircbot {
 
@@ -18,7 +17,7 @@ Log* Log::mObject = 0;
 Log::Log() {
 	system("mkdir ./log/");
 
-	mLogfile.open(LOG_FILE, std::fstream::in | std::fstream::out | std::fstream::app);
+	mLogfile.open(LOG_FILE, std::fstream::out | std::fstream::app);
 
 	if (!mLogfile.is_open()) {
 		DEBUG("Logfile konnte nicht geöffnet werden.");

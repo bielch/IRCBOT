@@ -14,8 +14,6 @@
 
 #include <sys/stat.h>
 
-
-
 namespace ircbot {
 
 int fileExists(const char* filepath) {
@@ -121,20 +119,20 @@ void event_numeric(irc_session_t * session, unsigned int event, const char * ori
 	std::string message;
 
 	if (event > 400) {
-
-		DEBUG(origin)
 		printf("ERROR %d: %s: %s %s %s %s\n", event, origin ? origin : "unknown", params[0], count > 1 ? params[1] : "", count > 2 ? params[2] : "", count > 3 ? params[3] : "");
 		sprintf(buffer, "ERROR %d: %s: %s %s %s %s\n", event, origin ? origin : "unknown", params[0], count > 1 ? params[1] : "", count > 2 ? params[2] : "", count > 3 ? params[3] : "");
 		message = buffer;
 
-		DEBUG(ctx->pConnection->mlastCommandOrigin);
-		ctx->pConnection->sendMsg(&message, &ctx->pConnection->mlastCommandOrigin);
+		if (event != 412)
+			ctx->pConnection->sendMsg(&message, &ctx->pConnection->mlastCommandOrigin);
 	}
 }
 
 void *runSession(void *ptr) {
 	DEBUG("thread constructed")
-	return (void*) irc_run((irc_session_s*) ptr);
+	int i = irc_run((irc_session_s*) ptr);
+	DEBUG("thread runfinised")
+	return (void*) i;
 }
 
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
@@ -161,36 +159,39 @@ std::string intToString(int i) {
 	return s;
 }
 
+void daemonize() {
+	pid_t pid, sid;
 
-void daemonize()
-{
-  pid_t pid, sid;
+	if (getppid() == 1)
+		return;
 
-  if (getppid() == 1) return;
+	pid = fork();
+	if (pid < 0)
+		exit(1);
 
-  pid = fork();
-  if ( pid < 0 ) exit (1);
+	/* Wenn ein Kindprozess erzeugt wurde, kann der
+	 Eltern Prozess sich beenden
+	 */
 
-  /* Wenn ein Kindprozess erzeugt wurde, kann der
-     Eltern Prozess sich beenden
-  */
+	if (pid > 0)
+		exit(0);
 
-  if (pid > 0) exit (0);
+	/* Neues file mode mask */
+	umask(0);
 
-  /* Neues file mode mask */
-  umask(0);
+	/* Neue SID Umgebung */
+	sid = setsid();
+	if (sid < 0)
+		exit(1);
 
-  /* Neue SID Umgebung */
-  sid = setsid();
-  if (sid < 0) exit(1);
+	/* Aendern des Arbeitsverzeichnisses */
+	if ((chdir("/") < 0))
+		exit(1);
 
-  /* Aendern des Arbeitsverzeichnisses */
-  if ((chdir("/") < 0)) exit(1);
-
-  /* Aendern der default Filedescriptoren */
-  freopen("/dev/null", "r", stdin);
-  freopen("/dev/null", "w", stdout);
-  freopen("/dev/null", "w", stderr);
+	/* Aendern der default Filedescriptoren */
+	freopen("/dev/null", "r", stdin);
+	freopen("/dev/null", "w", stdout);
+	freopen("/dev/null", "w", stderr);
 }
 
 }

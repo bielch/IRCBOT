@@ -8,6 +8,8 @@
 #ifndef LOG_H_
 #define LOG_H_
 
+#define LOG_FILE "./log/log.log"
+
 #include "Database.h"
 #include <fstream>
 

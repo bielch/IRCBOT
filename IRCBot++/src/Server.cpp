@@ -58,6 +58,7 @@ Server::Server(std::string* pHostname, unsigned short usPort, std::string* pNick
 }
 
 Server::~Server() {
+	DEBUG("destruct");
 	pthread_join(mThread, NULL);
 }
 

@@ -14,7 +14,7 @@ namespace ircbot {
 Configuration* Configuration::mObject = 0;
 
 Configuration::Configuration() :
-		 mDaemonize(false), mController(Controller::getInstance()), mNickname("ircbotx"), mLog(false) {
+		mDaemonize(false), mController(Controller::getInstance()), mNickname("ircbotx"), mLog(false) {
 
 }
 
@@ -30,6 +30,7 @@ Configuration& Configuration::getInstance() {
 }
 
 void Configuration::loadConfigurationFile(const std::string* pFilename) {
+	DEBUG("config file:")DEBUG(mData.size())
 	if (mData.size() == 0) {
 
 		std::ifstream file(pFilename->c_str());
@@ -38,11 +39,13 @@ void Configuration::loadConfigurationFile(const std::string* pFilename) {
 		if (file.is_open()) {
 			while (file.good()) {
 				getline(file, line);
+				DEBUG("commandlines" << line);
 
 				if (line[0] == '/' && line[1] == '/')
 					continue;
 
 				mController.executeCommand(&line);
+				usleep(100);
 			}
 
 			file.close();
