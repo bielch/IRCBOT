@@ -24,6 +24,7 @@ public:
 	void loadConfigurationFile(const std::string* pFilename);
 	void loadParameter(int pVarcount, char* pValues[]);
 
+	bool mDaemonize;
 protected:
 	Configuration();
 	virtual ~Configuration();
@@ -33,7 +34,6 @@ protected:
 	Controller& mController;
 	std::string mNickname;
 	std::vector<connection_context*> mData;
-	bool mDeamonize;
 	bool mLog;
 };
 

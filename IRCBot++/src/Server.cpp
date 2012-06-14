@@ -15,7 +15,7 @@
 namespace ircbot {
 
 Server::Server(std::string* pHostname, unsigned short usPort, std::string* pNickname) :
-		mHostname(*pHostname), mNickname(*pNickname), mPort(usPort) {
+		mHostname(*pHostname), mNickname(*pNickname), mPort(usPort), mConnected(false) {
 
 	DEBUG("connection constructor");
 
@@ -47,6 +47,7 @@ Server::Server(std::string* pHostname, unsigned short usPort, std::string* pNick
 	irc_option_set(mSession, LIBIRC_OPTION_STRIPNICKS);
 
 	// Initiate the IRC server connection
+	DEBUG("connect to " << mHostname);
 	if (irc_connect(mSession, mHostname.c_str(), mPort, 0, mNickname.c_str(), 0, 0)) {
 		printf("Could not connect: %s\n", irc_strerror(irc_errno(mSession)));
 	} else {
@@ -70,12 +71,23 @@ void Server::sendMsg(std::string* pMessage, std::string* pTarget) {
 }
 
 void Server::joinChannel(std::string* pChannel) {
-	for (unsigned int i = 0; i < mChannel.size(); i++)
-		if (mChannel[i]->compare(*pChannel) == 0)
-			return;
+	if (mConnected)
+		irc_cmd_join(mSession, pChannel->c_str(), 0);
+	else {
+
+		for (unsigned int i = 0; i < mChannel.size(); i++)
+			if (mChannel[i]->compare(*pChannel) == 0)
+				return;
+
+		mChannel.push_back(pChannel);
+	}
 }
 
 void Server::leaveChannel(std::string* pChannel) {
+	irc_cmd_part(mSession, pChannel->c_str());
+}
 
+void Server::leaveServer() {
+	irc_disconnect(mSession);
 }
 } /* namespace ircbot */

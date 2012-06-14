@@ -30,6 +30,7 @@ public:
 
 	std::string mHostname;
 	std::string mNickname;
+	std::string mlastCommandOrigin;
 	std::vector<std::string*> mChannel;
 
 	irc_callbacks_t mCallbacks;
@@ -41,6 +42,8 @@ public:
 
 	int iret1;
 	unsigned short mPort;
+
+	bool mConnected;
 
 };
 

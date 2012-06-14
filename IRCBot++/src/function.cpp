@@ -12,6 +12,10 @@
 #include "Log.h"
 #include "debug.h"
 
+#include <sys/stat.h>
+
+
+
 namespace ircbot {
 
 int fileExists(const char* filepath) {
@@ -62,27 +66,22 @@ void removeFrontWhitespaces(std::string& pString) {
 }
 
 void event_join(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {
-
-	if (!origin)
-		return;
-
-	DEBUG("join event");
-
-	//struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
-	irc_cmd_join(session, "#asdf", 0);
+	return;
 }
 
 void event_connect(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {
 	struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
+
+	DEBUG("event connected")
+
+	ctx->pConnection->mConnected = true;
 
 	for (unsigned int i = 0; i < ctx->pConnection->mChannel.size(); i++)
 		irc_cmd_join(session, ctx->pConnection->mChannel[i]->c_str(), 0);
 }
 
 void event_quit(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {
-
-	if (!origin)
-		return;
+	return;
 }
 
 void event_channel_notice(irc_session_t * session, const char * event, const char * origin, const char ** params, unsigned int count) {
@@ -116,15 +115,82 @@ void event_channel_notice(irc_session_t * session, const char * event, const cha
 }
 
 void event_numeric(irc_session_t * session, unsigned int event, const char * origin, const char ** params, unsigned int count) {
+	struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
+
+	char buffer[200];
+	std::string message;
+
 	if (event > 400) {
-		struct ircbot_context * ctx = (struct ircbot_context *) irc_get_ctx(session);
-		ctx->pController->removeConnection(ctx->pConnection);
+
+		DEBUG(origin)
 		printf("ERROR %d: %s: %s %s %s %s\n", event, origin ? origin : "unknown", params[0], count > 1 ? params[1] : "", count > 2 ? params[2] : "", count > 3 ? params[3] : "");
+		sprintf(buffer, "ERROR %d: %s: %s %s %s %s\n", event, origin ? origin : "unknown", params[0], count > 1 ? params[1] : "", count > 2 ? params[2] : "", count > 3 ? params[3] : "");
+		message = buffer;
+
+		DEBUG(ctx->pConnection->mlastCommandOrigin);
+		ctx->pConnection->sendMsg(&message, &ctx->pConnection->mlastCommandOrigin);
 	}
 }
 
 void *runSession(void *ptr) {
+	DEBUG("thread constructed")
 	return (void*) irc_run((irc_session_s*) ptr);
+}
+
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		if (item.size() > 0)
+			elems.push_back(item);
+	}
+	return elems;
+}
+
+std::vector<std::string> split(const std::string &s, char delim) {
+	std::vector<std::string> elems;
+	return split(s, delim, elems);
+}
+
+std::string intToString(int i) {
+	std::stringstream ss;
+	std::string s;
+	ss << i;
+	s = ss.str();
+
+	return s;
+}
+
+
+void daemonize()
+{
+  pid_t pid, sid;
+
+  if (getppid() == 1) return;
+
+  pid = fork();
+  if ( pid < 0 ) exit (1);
+
+  /* Wenn ein Kindprozess erzeugt wurde, kann der
+     Eltern Prozess sich beenden
+  */
+
+  if (pid > 0) exit (0);
+
+  /* Neues file mode mask */
+  umask(0);
+
+  /* Neue SID Umgebung */
+  sid = setsid();
+  if (sid < 0) exit(1);
+
+  /* Aendern des Arbeitsverzeichnisses */
+  if ((chdir("/") < 0)) exit(1);
+
+  /* Aendern der default Filedescriptoren */
+  freopen("/dev/null", "r", stdin);
+  freopen("/dev/null", "w", stdout);
+  freopen("/dev/null", "w", stderr);
 }
 
 }

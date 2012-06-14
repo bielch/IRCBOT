@@ -14,7 +14,7 @@ namespace ircbot {
 Configuration* Configuration::mObject = 0;
 
 Configuration::Configuration() :
-		mController(Controller::getInstance()), mNickname("ircbot"), mDeamonize(false), mLog(false) {
+		 mDaemonize(false), mController(Controller::getInstance()), mNickname("ircbotx"), mLog(false) {
 
 }
 
@@ -66,7 +66,7 @@ void Configuration::loadParameter(int pVarcount, char* pValues[]) {
 		} else if (line.compare(0, 2, "-p") == 0 && line.size() == 2 && i + 1 < pVarcount) {
 			mData.back()->dPort = atoi(pValues[i + 1]);
 		} else if (line.compare(0, 7, "-deamon") == 0 && line.size() == 7) {
-			mDeamonize = true;
+			mDaemonize = true;
 		} else if (line.compare(0, 4, "-log") == 0 && line.size() == 4) {
 			mLog = true;
 		}
