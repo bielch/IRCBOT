@@ -1,0 +1,86 @@
+.\"Modified from man(1) of FreeBSD, the NetBSD mdoc.template, and mdoc.samples.
+.\"See Also:
+.\"man mdoc.samples for a complete listing of options
+.\"man mdoc for the short list of editing options
+.\"/usr/share/misc/mdoc.template
+.Dd 13/6/12               \" DATE 
+.Dt IRCBot++      \" Program name and manual section number 
+.Os C.B
+.Sh NAME                 \" Section Header - required - don't modify 
+.Nm IRCBot++, IRCBotplusplus
+.\" The following lines are read in generating the apropos(man -k) database. Use only key
+.\" words here as the database is built based on the words here and in the .ND line. 
+.\" Use .Nm macro to designate other names for the documented program.
+.Sh SYNOPSIS             \" Section Header - required - don't modify
+IRCBot++
+.Op Fl s                 
+.Op Fl c
+.Op Fl p
+.Op Fl deamon
+.Op Fl log
+.Pp
+.Ar Client controls
+.Pp
+.Op log
+.Op nickname
+.Op lastseen
+.Op jchannel[Servernr]
+.Op lchannel[Servernr]
+.Op jserver Hostname[Port][Nickname]
+.Op lserver Hostname[Port][Nickname]
+.Sh DESCRIPTION          \" Section Header - required - don't modify
+.Pp                      \" Inserts a space
+
+.Ar A list of start parameters and their descriptions:
+.Bl -tag -width -indent  \" Differs from above in tag removed 
+.It Fl s                 \"-a flag as a list item
+with this parameter the bot is joining this server          (e.g. -s www.ircbot.com)
+.It Fl c
+with this parameter the bot is joining this channel         (e.g. -c talkroom)
+.It Fl p
+this parameter is for the server port                       (e.g. -p 8888)
+.It Fl deamon
+with this parameter the bot is running in deamon mode       (e.g. -deamon)
+.It Fl log
+with this parameter the bot is logging       			    (e.g. -log)
+
+.El                      \" Ends the list
+
+.Pp
+.Ar A list of control features and their descriptions:
+.Bl -tag -width -indent  \" Differs from above in tag removed
+
+The bot knows his name, commands are executed only with his name (e.g. "Botname command")
+.It time
+display the current time
+.It log 1/0               \"-a flag as a list item
+with this command is it possible to trigger the log function. By default the log is turned off(0).
+.It showlog
+display the log from the logfile into the chat 
+.It nickname XXX
+with this command is it possible to change the nickname of the bot (XXX = new Botnickname)
+.It lastseen XXX
+with this command is it possible to show the lastseen value for a nickname (XXX = usernickname)
+.It serverlist
+shows the current server connections (e.g. 0 Server0
+								   1 Server1 )
+.It jchannel
+with this command the bot is joining the channel 			  (e.g "jchannel channel Servernr")
+.It lchannel
+with this command the bot is leaving the channel 		      (e.g "lchannel channel servernr")
+.It jserver
+with this command the bot is joining the server 			  (e.g "jserver Hostname")
+.It lserver
+with this command the bot is leaving the server 		      (e.g "lserver servernr")
+.El                      \" Ends the list
+.Pp
+
+.\" .Sh ENVIRONMENT      \" May not be needed
+.\" .Bl -tag -width "ENV_VAR_1" -indent \" ENV_VAR_1 is width of the string ENV_VAR_1
+.\" .It Ev ENV_VAR_1
+.\" Description of ENV_VAR_1
+.\" .It Ev ENV_VAR_2
+.\" Description of ENV_VAR_2
+.\" .El                      
+.\" .Sh BUGS              \" Document known, unremedied bugs 
+.\" .Sh HISTORY           \" Document history if command behaves in a unique manner
